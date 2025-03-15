@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.beatrice</groupId>
-    <artifactId>dgtu2</artifactId>
+    <artifactId>hui</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>dgtu2</name>
-    <description>dgtu2</description>
+    <name>hui</name>
+    <description>hui</description>
     <url/>
     <licenses>
         <license/>
@@ -69,6 +69,13 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <build>
