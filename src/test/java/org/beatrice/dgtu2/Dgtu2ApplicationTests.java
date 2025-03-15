@@ -1,0 +1,13 @@
+package org.beatrice.dgtu2;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class Dgtu2ApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
