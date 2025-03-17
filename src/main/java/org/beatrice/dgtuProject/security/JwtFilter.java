@@ -34,10 +34,6 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = extractToken(request);
 
-        if (token == null || token.isEmpty()) {
-            setErrorResponse(response, "Token is missing"); // TODO fix this shit
-        }
-
         if (jwtUtil.validateToken(token)) {
             String email = jwtUtil.getEmailFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
