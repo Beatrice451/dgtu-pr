@@ -1,4 +1,4 @@
-package org.beatrice.hui.dto;
+package org.beatrice.dgtuProject.dto;
 
 public class LoginRequest {
     private String email;
