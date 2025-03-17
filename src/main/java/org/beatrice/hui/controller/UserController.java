@@ -20,7 +20,7 @@ public class UserController {
 
 
 
-    @PostMapping("/auth/register")
+    @PostMapping("/api/auth/signup")
     public String handleRegistration(@RequestParam String name,
                                      @RequestParam String email,
                                      @RequestParam String city,
