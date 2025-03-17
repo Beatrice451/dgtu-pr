@@ -1,6 +1,6 @@
-package org.beatrice.hui.config;
+package org.beatrice.dgtuProject.config;
 
-import org.beatrice.hui.security.JwtFilter;
+import org.beatrice.dgtuProject.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

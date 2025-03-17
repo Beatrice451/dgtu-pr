@@ -1,10 +1,12 @@
-package org.beatrice.hui.service;
+package org.beatrice.dgtuProject.service;
 
 
-import org.beatrice.hui.dto.LoginRequest;
-import org.beatrice.hui.model.User;
-import org.beatrice.hui.repository.UserRepository;
-import org.beatrice.hui.security.JwtUtil;
+import org.beatrice.dgtuProject.dto.AuthResponse;
+import org.beatrice.dgtuProject.dto.ErrorResponse;
+import org.beatrice.dgtuProject.dto.LoginRequest;
+import org.beatrice.dgtuProject.model.User;
+import org.beatrice.dgtuProject.repository.UserRepository;
+import org.beatrice.dgtuProject.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,18 +37,18 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
 
         if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid email or password"));
         }
 
         User user = userOptional.get();
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid email or password"));
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
 
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body(new AuthResponse("200 Login successful", token));
     }
 
 

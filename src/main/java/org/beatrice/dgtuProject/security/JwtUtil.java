@@ -1,4 +1,4 @@
-package org.beatrice.hui.security;
+package org.beatrice.dgtuProject.security;
 
 
 import io.jsonwebtoken.Claims;

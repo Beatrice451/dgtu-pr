@@ -1,9 +1,9 @@
-package org.beatrice.hui.service;
+package org.beatrice.dgtuProject.service;
 
 
-import org.beatrice.hui.model.User;
-import org.beatrice.hui.repository.UserRepository;
-import org.beatrice.hui.security.JwtUtil;
+import org.beatrice.dgtuProject.model.User;
+import org.beatrice.dgtuProject.repository.UserRepository;
+import org.beatrice.dgtuProject.security.JwtUtil;
 import org.springframework.stereotype.Service;
 
 @Service

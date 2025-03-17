@@ -1,15 +1,18 @@
-package org.beatrice.hui.controller;
+package org.beatrice.dgtuProject.controller;
 
-import org.beatrice.hui.dto.LoginRequest;
-import org.beatrice.hui.model.User;
-import org.beatrice.hui.repository.UserRepository;
-import org.beatrice.hui.service.UserService;
+import org.beatrice.dgtuProject.dto.ApiResponse;
+import org.beatrice.dgtuProject.dto.ErrorResponse;
+import org.beatrice.dgtuProject.dto.LoginRequest;
+import org.beatrice.dgtuProject.model.User;
+import org.beatrice.dgtuProject.repository.UserRepository;
+import org.beatrice.dgtuProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,16 +28,16 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<String> handleRegistration(@RequestBody User user) throws Exception {
+    public ResponseEntity<?> handleRegistration(@RequestBody User user) throws Exception {
         try {
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Stated email is already registered");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse("409 Conflict", "Email is already in use"));
             }
             userService.registerUser(user);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("User created successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error has occurred while registering the user");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("500 Internal Server Error", "Everything broke"));
         }
     }
 

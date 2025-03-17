@@ -1,4 +1,4 @@
-package org.beatrice.hui.model;
+package org.beatrice.dgtuProject.model;
 
 
 import jakarta.persistence.*;

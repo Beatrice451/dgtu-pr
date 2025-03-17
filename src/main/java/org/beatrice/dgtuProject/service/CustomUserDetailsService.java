@@ -1,8 +1,7 @@
-package org.beatrice.hui.service;
+package org.beatrice.dgtuProject.service;
 
-import org.beatrice.hui.model.User;
-import org.beatrice.hui.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.beatrice.dgtuProject.model.User;
+import org.beatrice.dgtuProject.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

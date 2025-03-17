@@ -1,6 +1,6 @@
-package org.beatrice.hui.repository;
+package org.beatrice.dgtuProject.repository;
 
-import org.beatrice.hui.model.User;
+import org.beatrice.dgtuProject.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
