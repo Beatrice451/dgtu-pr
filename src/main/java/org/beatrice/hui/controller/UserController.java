@@ -1,41 +1,27 @@
 package org.beatrice.hui.controller;
 
 import org.beatrice.hui.model.User;
-import org.beatrice.hui.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.beatrice.hui.service.AuthService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("api/users")
 public class UserController {
-    UserService userService;
+    private final AuthService authService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(AuthService authService) {
+        this.authService = authService;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<User> getMe(@RequestHeader("Authorization") String authToken) {
+        String token = authToken.substring(7);
+        User user = authService.getUserFromToken(token);
 
-
-
-
-    @PostMapping("/api/auth/signup")
-    public String handleRegistration(@RequestParam String name,
-                                     @RequestParam String email,
-                                     @RequestParam String city,
-                                     @RequestParam String password) throws Exception {
-        User user = new User();
-        user.setPassword(password);
-        user.setCity(city);
-        user.setName(name);
-        user.setEmail(email);
-
-        userService.registerUser(user);
-
-        return "Success";
+        return ResponseEntity.ok(user);
     }
 }
-
-
-
