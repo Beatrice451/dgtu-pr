@@ -1,6 +1,7 @@
 package org.beatrice.dgtuProject.service;
 
 
+import org.beatrice.dgtuProject.dto.ApiResponse;
 import org.beatrice.dgtuProject.dto.AuthResponse;
 import org.beatrice.dgtuProject.dto.ErrorResponse;
 import org.beatrice.dgtuProject.dto.LoginRequest;
@@ -49,6 +50,16 @@ public class UserService {
         String token = jwtUtil.generateToken(user.getEmail());
 
         return ResponseEntity.ok().body(new AuthResponse("200 Login successful", token));
+    }
+
+    public ResponseEntity<?> deleteUser(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("404 Not Found", "No user with provided id was found"));
+        }
+        userRepository.deleteById(user.get().getId());
+        return ResponseEntity.ok(new ApiResponse("User deleted successfully"));
+
     }
 
 
