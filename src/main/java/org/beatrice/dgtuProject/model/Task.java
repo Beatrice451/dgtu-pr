@@ -35,6 +35,14 @@ public class Task {
     )
     Set<Tag> tags = new HashSet<>();
 
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
     public Long getId() {
         return id;
     }

@@ -1,0 +1,25 @@
+{
+  "categories": [
+    {
+      "group": "General",
+      "tags": [
+        {"name": "work"},
+        {"name": "personal"},
+        {"name": "study"},
+        {"name": "health"},
+        {"name": "finance"},
+        {"name": "shopping"},
+        {"name": "home"},
+        {"name": "travel"}
+      ]
+    },
+    {
+      "group": "Priority",
+      "tags": [
+        {"name": "High-Priority"},
+        {"name": "Medium-Priority"},
+        {"name": "Low-Priority"}
+      ]
+    }
+  ]
+}

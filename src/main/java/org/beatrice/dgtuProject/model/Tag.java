@@ -12,8 +12,17 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "tags")
     Set<Task> tasks = new HashSet<>();
+
+    public Tag(String name) {
+        this.name = name;
+    }
+
+    public Tag() {
+
+    }
 }

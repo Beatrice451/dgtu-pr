@@ -130,4 +130,15 @@ public class JwtUtil {
         return getAllClaims(token).getSubject();
     }
 
+    public String getTokenFromHeader(String header) {
+        if (header == null || header.isEmpty()) {
+            throw new IllegalArgumentException("Header is missing");
+        }
+
+        if (!header.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid header format");
+        }
+
+        return header.substring(7);
+    }
 }
