@@ -18,13 +18,11 @@ import java.util.Optional;
 public class TaskService {
 
     private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService userDetailsService;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
     public TaskService(JwtUtil jwtUtil, CustomUserDetailsService userDetailsService, TaskRepository taskRepository, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
     }
@@ -36,7 +34,6 @@ public class TaskService {
 
         return optionalUser.map(user -> {
             task.setUser(user);
-            task.
             taskRepository.save(task);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Task successfully created"));
         }).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid user")));
