@@ -3,6 +3,7 @@ package org.beatrice.dgtuProject.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,10 +21,20 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Column
     private String city;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user")
     private List<Task> task;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
