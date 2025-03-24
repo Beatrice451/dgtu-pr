@@ -1,7 +1,5 @@
 package org.beatrice.dgtuProject.dto;
 
-import org.beatrice.dgtuProject.model.Tag;
-
 import java.time.LocalDateTime;
 import java.util.Set;
 
