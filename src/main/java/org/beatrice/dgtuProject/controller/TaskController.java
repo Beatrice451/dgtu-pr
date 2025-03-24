@@ -1,6 +1,7 @@
 package org.beatrice.dgtuProject.controller;
 
 
+import org.beatrice.dgtuProject.dto.TaskRequest;
 import org.beatrice.dgtuProject.model.Task;
 import org.beatrice.dgtuProject.security.JwtUtil;
 import org.beatrice.dgtuProject.service.TaskService;
@@ -25,8 +26,15 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTask(@RequestHeader("Authorization") String header, @RequestBody Task task) {
+    public ResponseEntity<?> createTask(@RequestHeader("Authorization") String header, @RequestBody TaskRequest request) {
+
         String token = jwtUtil.getTokenFromHeader(header);
-        return taskService.createTask(token, task);
+        Task task = new Task();
+        task.setName(request.getName());
+        task.setDescription(request.getDescription());
+        task.setDeadline(request.getDeadline());
+        task.setStatus(request.getStatus());
+
+        return taskService.createTask(token, task, request.getTags());
     }
 }

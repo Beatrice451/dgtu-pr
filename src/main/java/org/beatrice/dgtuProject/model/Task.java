@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "tasks")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,7 +18,8 @@ public class Task {
 
     private String description;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     private LocalDateTime deadline;
 
@@ -67,11 +69,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -90,4 +92,12 @@ public class Task {
     public void setUser(User user) {
         this.user = user;
     }
+
+
+    public enum Status {
+        IN_PROGRESS,
+        COMPLETED
+    }
 }
+
+

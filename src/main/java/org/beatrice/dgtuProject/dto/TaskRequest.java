@@ -10,7 +10,7 @@ public class TaskRequest {
     private String description;
     private LocalDateTime deadline;
     private String status;
-    private Set<Tag> tags;
+    private Set<Long> tags;
 
     public String getName() {
         return name;
@@ -44,11 +44,11 @@ public class TaskRequest {
         this.status = status;
     }
 
-    public Set<Tag> getTags() {
+    public Set<Long> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(Set<Long> tags) {
         this.tags = tags;
     }
 }
