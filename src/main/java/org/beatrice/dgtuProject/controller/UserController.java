@@ -23,7 +23,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<?> getMe(@RequestHeader(value = "Authorization", required = false) String authToken) {
         if (authToken == null || authToken.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Token is missing"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 UNAUTHORIZED", "Token is missing"));
         }
 
         String token = authToken.substring(7);
