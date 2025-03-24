@@ -19,7 +19,7 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private TaskStatus status;
 
     private LocalDateTime deadline;
 
@@ -69,11 +69,11 @@ public class Task {
         this.description = description;
     }
 
-    public Status getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -91,12 +91,6 @@ public class Task {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-
-    public enum Status {
-        IN_PROGRESS,
-        COMPLETED
     }
 }
 
