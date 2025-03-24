@@ -1,21 +1,22 @@
 package org.beatrice.dgtuProject.service;
 
 
-import org.beatrice.dgtuProject.dto.ApiResponse;
-import org.beatrice.dgtuProject.dto.ErrorResponse;
+import org.beatrice.dgtuProject.dto.TaskRequest;
+import org.beatrice.dgtuProject.exception.DeadlinePassedException;
+import org.beatrice.dgtuProject.exception.InvalidTaskStatusException;
+import org.beatrice.dgtuProject.exception.UserNotFoundException;
 import org.beatrice.dgtuProject.model.Tag;
 import org.beatrice.dgtuProject.model.Task;
+import org.beatrice.dgtuProject.model.TaskStatus;
 import org.beatrice.dgtuProject.model.User;
 import org.beatrice.dgtuProject.repository.TagRepository;
 import org.beatrice.dgtuProject.repository.TaskRepository;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.security.JwtUtil;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -33,24 +34,46 @@ public class TaskService {
         this.tagRepository = tagRepository;
     }
 
-    public ResponseEntity<?> createTask(String token, Task task, Set<Long> tagIds) {
-        String email = jwtUtil.getEmailFromToken(token);
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-
-        return optionalUser.map(user -> {
-            task.setUser(user);
-
-            Set<Tag> existingTags = new HashSet<>(tagRepository.findAllById(tagIds));
-            task.setTags(existingTags);
-
-            // ОТЛАДОЧНЫЙ ВЫВОД
-            System.out.println("Количество тегов: " + existingTags.size());
-            existingTags.forEach(tag -> System.out.println("Тег ID: " + tag.getId()));
 
 
-            taskRepository.save(task);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Task created successfully"));
-        }).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid user")));
+    /**
+     * Creates a new task (Task) for the user identified by the provided token.
+     *
+     * @param token   JWT token used to identify the user.
+     * @param request DTO request containing task details.
+     * @return The saved {@link Task} object.
+     * @throws UserNotFoundException    if the user is not found by email.
+     * @throws IllegalArgumentException if an invalid task status is provided.
+     */
+
+    public Task createTask(String token, TaskRequest request) {
+        User user = userRepository.findByEmail(jwtUtil.getEmailFromToken(token))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Set<Tag> tags = new HashSet<>(tagRepository.findAllById(request.getTags()));
+        TaskStatus status;
+        try {
+            status = TaskStatus.valueOf(request.getStatus().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidTaskStatusException("Invalid task status: " + request.getStatus());
+        }
+
+
+        LocalDateTime deadline = request.getDeadline();
+        if (deadline.isBefore(LocalDateTime.now())) {
+            throw new DeadlinePassedException("Deadline cannot be in the past");
+        }
+
+
+        Task task = new Task();
+        task.setTags(tags);
+        task.setUser(user);
+        task.setStatus(status);
+        task.setDeadline(request.getDeadline());
+        task.setDescription(request.getDescription());
+        task.setName(request.getName());
+
+        return taskRepository.save(task);
     }
 }
