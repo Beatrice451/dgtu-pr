@@ -1,13 +1,11 @@
 package org.beatrice.dgtuProject.security;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.beatrice.dgtuProject.service.CustomUserDetailsService;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @SuppressWarnings("NullableProblems")
 @Component
@@ -45,19 +41,6 @@ public class JwtFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    private void setErrorResponse(HttpServletResponse response, String message) throws IOException { // TODO do something with this (this method is unused)
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-        Map<String, String> errorDetails = new HashMap<>();
-        errorDetails.put("error", "Unauthorized");
-        errorDetails.put("message", message);
-
-        ObjectMapper mapper = new ObjectMapper();
-        response.getWriter().write(mapper.writeValueAsString(errorDetails));
-
-
-    }
 
     private String extractToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
