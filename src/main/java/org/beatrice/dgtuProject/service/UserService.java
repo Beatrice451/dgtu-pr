@@ -1,10 +1,8 @@
 package org.beatrice.dgtuProject.service;
 
 
-import org.beatrice.dgtuProject.dto.ApiResponse;
-import org.beatrice.dgtuProject.dto.AuthResponse;
-import org.beatrice.dgtuProject.dto.ErrorResponse;
-import org.beatrice.dgtuProject.dto.LoginRequest;
+import org.beatrice.dgtuProject.dto.*;
+import org.beatrice.dgtuProject.exception.UserNotFoundException;
 import org.beatrice.dgtuProject.model.User;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.security.JwtUtil;
@@ -29,7 +27,13 @@ public class UserService {
         this.jwtUtil = jwtUtil;
     }
 
-    public void registerUser(User user) {
+    public void registerUser(UserRequest request) {
+        User user = new User();
+
+        user.setName(request.getName());
+        user.setCity(request.getCity());
+        user.setEmail(request.getEmail());
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -55,7 +59,7 @@ public class UserService {
     public ResponseEntity<?> deleteUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("404 Not Found", "No user with provided id was found"));
+            throw new UserNotFoundException("User not found");
         }
         userRepository.deleteById(user.get().getId());
         return ResponseEntity.ok(new ApiResponse("User deleted successfully"));
