@@ -2,6 +2,9 @@ package org.beatrice.dgtuProject.service;
 
 
 import org.beatrice.dgtuProject.dto.*;
+import org.beatrice.dgtuProject.exception.InvalidTokenException;
+import org.beatrice.dgtuProject.exception.MissingTokenException;
+import org.beatrice.dgtuProject.exception.UserAlreadyExistsException;
 import org.beatrice.dgtuProject.exception.UserNotFoundException;
 import org.beatrice.dgtuProject.model.User;
 import org.beatrice.dgtuProject.repository.UserRepository;
@@ -28,13 +31,17 @@ public class UserService {
     }
 
     public void registerUser(UserRequest request) {
-        User user = new User();
+        userRepository.findByEmail(request.getEmail())
+                .ifPresent(user -> {
+                    throw new UserAlreadyExistsException("User already exists: " + request.getEmail());
+                });
 
+        User user = new User();
+        user.setEmail(request.getEmail());
         user.setName(request.getName());
         user.setCity(request.getCity());
-        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -64,6 +71,20 @@ public class UserService {
         userRepository.deleteById(user.get().getId());
         return ResponseEntity.ok(new ApiResponse("User deleted successfully"));
 
+    }
+
+    public User getUserInfo(String header) {
+        if (header == null || header.isEmpty()) {
+            throw new MissingTokenException("Token is missing");
+        }
+
+        String token = jwtUtil.getTokenFromHeader(header);
+        if (!jwtUtil.validateToken(token)) {
+            throw new InvalidTokenException("Token is invalid or expired");
+        }
+
+        String email = jwtUtil.getEmailFromToken(token);
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
 

@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+                .body(new ErrorResponse("404 NOT FOUND", exception.getMessage()));
     }
 
     @ExceptionHandler(InvalidTaskStatusException.class)
@@ -26,5 +26,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleDeadlinePassed(DeadlinePassedException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("400 BAD REQUEST", exception.getMessage()));
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<?> handleUserAlreadyExists(UserAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("409 CONFLICT", exception.getMessage()));
+    }
+
+    @ExceptionHandler(MissingTokenException.class)
+    public ResponseEntity<?> handleMissingToken(MissingTokenException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("403 UNAUTHORIZED", exception.getMessage()));
     }
 }

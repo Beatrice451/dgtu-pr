@@ -1,16 +1,16 @@
 package org.beatrice.dgtuProject.dto;
 
 public class UserRequest {
-    private String email;
     private String name;
-    private String password;
+    private String email;
     private String city;
+    private String password;
 
-    public UserRequest(String email, String name, String password, String city) {
-        this.email = email;
+    public UserRequest(String name, String email, String city, String password) {
         this.name = name;
-        this.password = password;
+        this.email = email;
         this.city = city;
+        this.password = password;
     }
 
     public String getCity() {

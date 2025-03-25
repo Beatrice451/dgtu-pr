@@ -1,9 +1,8 @@
 package org.beatrice.dgtuProject.controller;
 
 import org.beatrice.dgtuProject.dto.ApiResponse;
-import org.beatrice.dgtuProject.dto.ErrorResponse;
 import org.beatrice.dgtuProject.dto.LoginRequest;
-import org.beatrice.dgtuProject.model.User;
+import org.beatrice.dgtuProject.dto.UserRequest;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +27,10 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<?> handleRegistration(@RequestBody User user) throws Exception {
-        try {
-            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse("409 Conflict", "Email is already in use"));
-            }
-            userService.registerUser(user);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("User created successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("500 Internal Server Error", "Everything broke"));
-        }
+    public ResponseEntity<?> handleRegistration(@RequestBody UserRequest request) {
+        userService.registerUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse("User created successfully"));
     }
 
     @PostMapping("/signin")

@@ -25,11 +25,14 @@ public class TagInit {
     @PostConstruct
     public void init() {
         try {
+            // Читаем JSON-файл
             InputStream inputStream = getClass().getResourceAsStream("/tags.json");
             JsonNode rootNode = objectMapper.readTree(inputStream);
 
+            // Определяем порядок групп
             List<String> groupOrder = List.of("General", "Priority");
 
+            // Вставляем теги в указанном порядке
             groupOrder.forEach(group -> addTagsByGroup(rootNode, group));
 
         } catch (IOException e) {
