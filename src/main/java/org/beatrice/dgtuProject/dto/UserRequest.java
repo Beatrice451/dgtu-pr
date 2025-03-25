@@ -6,6 +6,13 @@ public class UserRequest {
     private String password;
     private String city;
 
+    public UserRequest(String email, String name, String password, String city) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.city = city;
+    }
+
     public String getCity() {
         return city;
     }
