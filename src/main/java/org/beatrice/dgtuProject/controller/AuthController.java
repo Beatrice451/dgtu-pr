@@ -27,7 +27,7 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<?> handleRegistration(@RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse> handleRegistration(@RequestBody UserRequest request) {
         userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse("User created successfully"));

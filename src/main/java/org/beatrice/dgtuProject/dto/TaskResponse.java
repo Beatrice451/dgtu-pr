@@ -8,23 +8,23 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record TaskRequest(
+public record TaskResponse(
         String name,
         String description,
         LocalDateTime deadline,
-        String status,
-        Set<Long> tags
+        TaskStatus status,
+        Set<String> tags
 ) {
-    public static TaskRequest fromEntity(Task task) {
-
-        return new TaskRequest(
+    public static TaskResponse fromEntity(Task task) {
+        return new TaskResponse(
                 task.getName(),
                 task.getDescription(),
                 task.getDeadline(),
-                task.getStatus().toString(),
+                task.getStatus(),
                 task.getTags().stream()
-                        .map(Tag::getId)
+                        .map(Tag::getName)
                         .collect(Collectors.toSet())
         );
     }
 }
+

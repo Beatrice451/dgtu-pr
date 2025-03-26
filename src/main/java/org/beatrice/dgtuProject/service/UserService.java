@@ -1,7 +1,10 @@
 package org.beatrice.dgtuProject.service;
 
 
-import org.beatrice.dgtuProject.dto.*;
+import org.beatrice.dgtuProject.dto.AuthResponse;
+import org.beatrice.dgtuProject.dto.ErrorResponse;
+import org.beatrice.dgtuProject.dto.LoginRequest;
+import org.beatrice.dgtuProject.dto.UserRequest;
 import org.beatrice.dgtuProject.exception.InvalidTokenException;
 import org.beatrice.dgtuProject.exception.MissingTokenException;
 import org.beatrice.dgtuProject.exception.UserAlreadyExistsException;
@@ -46,7 +49,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> loginUser(LoginRequest loginRequest) {
-        Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
+        Optional<User> userOptional = userRepository.findByEmail(loginRequest.email());
 
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid email or password"));
@@ -54,23 +57,21 @@ public class UserService {
 
         User user = userOptional.get();
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid email or password"));
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
 
-        return ResponseEntity.ok().body(new AuthResponse("200 Login successful", token));
+        return ResponseEntity.ok().body(new AuthResponse("200 Login successful"));
     }
 
-    public ResponseEntity<?> deleteUser(Long id) {
+    public void deleteUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new UserNotFoundException("User not found");
         }
         userRepository.deleteById(user.get().getId());
-        return ResponseEntity.ok(new ApiResponse("User deleted successfully"));
-
     }
 
     public User getUserInfo(String header) {

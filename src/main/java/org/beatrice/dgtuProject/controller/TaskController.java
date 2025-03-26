@@ -3,15 +3,14 @@ package org.beatrice.dgtuProject.controller;
 
 import org.beatrice.dgtuProject.dto.ApiResponse;
 import org.beatrice.dgtuProject.dto.TaskRequest;
-import org.beatrice.dgtuProject.security.JwtUtil;
+import org.beatrice.dgtuProject.model.Task;
 import org.beatrice.dgtuProject.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/tasks")
@@ -19,18 +18,21 @@ public class TaskController {
 
 
     private final TaskService taskService;
-    private final JwtUtil jwtUtil;
 
-    public TaskController(TaskService taskService, JwtUtil jwtUtil) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping
     public ResponseEntity<?> createTask(@RequestHeader("Authorization") String header, @RequestBody TaskRequest request) {
-        String token = jwtUtil.getTokenFromHeader(header);
-        taskService.createTask(token, request);
+        taskService.createTask(header, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("Task created successfully"));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getTasks(@RequestHeader("Authorization") String header) {
+        List<?> tasks = taskService.GetTasks(header);
+        return ResponseEntity.ok(tasks);
     }
 
 }

@@ -2,6 +2,7 @@ package org.beatrice.dgtuProject.controller;
 
 import org.beatrice.dgtuProject.model.User;
 import org.beatrice.dgtuProject.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class UserController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        return userService.deleteUser(id);
-
+        userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

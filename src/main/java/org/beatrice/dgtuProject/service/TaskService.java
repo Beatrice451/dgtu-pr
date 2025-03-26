@@ -2,6 +2,7 @@ package org.beatrice.dgtuProject.service;
 
 
 import org.beatrice.dgtuProject.dto.TaskRequest;
+import org.beatrice.dgtuProject.dto.TaskResponse;
 import org.beatrice.dgtuProject.exception.DeadlinePassedException;
 import org.beatrice.dgtuProject.exception.InvalidTaskStatusException;
 import org.beatrice.dgtuProject.exception.UserNotFoundException;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -36,31 +39,22 @@ public class TaskService {
 
 
 
+    public void createTask(String header, TaskRequest request) {
+        String token = jwtUtil.getTokenFromHeader(header);
 
-    /**
-     * Creates a new task (Task) for the user identified by the provided token.
-     *
-     * @param token   JWT token used to identify the user.
-     * @param request DTO request containing task details.
-     * @return The saved {@link Task} object.
-     * @throws UserNotFoundException    if the user is not found by email.
-     * @throws IllegalArgumentException if an invalid task status is provided.
-     */
-
-    public Task createTask(String token, TaskRequest request) {
         User user = userRepository.findByEmail(jwtUtil.getEmailFromToken(token))
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Set<Tag> tags = new HashSet<>(tagRepository.findAllById(request.getTags()));
+        Set<Tag> tags = new HashSet<>(tagRepository.findAllById(request.tags()));
         TaskStatus status;
         try {
-            status = TaskStatus.valueOf(request.getStatus().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidTaskStatusException("Invalid task status: " + request.getStatus());
+            status = TaskStatus.valueOf(request.status().toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new InvalidTaskStatusException("Invalid task status: " + request.status());
         }
 
 
-        LocalDateTime deadline = request.getDeadline();
+        LocalDateTime deadline = request.deadline();
         if (deadline.isBefore(LocalDateTime.now())) {
             throw new DeadlinePassedException("Deadline cannot be in the past");
         }
@@ -70,10 +64,19 @@ public class TaskService {
         task.setTags(tags);
         task.setUser(user);
         task.setStatus(status);
-        task.setDeadline(request.getDeadline());
-        task.setDescription(request.getDescription());
-        task.setName(request.getName());
+        task.setDeadline(request.deadline());
+        task.setDescription(request.description());
+        task.setName(request.name());
 
-        return taskRepository.save(task);
+        taskRepository.save(task);
+    }
+
+    public List<TaskResponse> GetTasks(String header) {
+        String token = jwtUtil.getTokenFromHeader(header);
+        String email = jwtUtil.getEmailFromToken(token);
+        List<Task> tasks = taskRepository.findAllByUserEmail(email);
+        return tasks.stream()
+                .map(TaskResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 }
