@@ -12,6 +12,7 @@ public record TaskResponse(
         String name,
         String description,
         LocalDateTime deadline,
+        LocalDateTime createdAt,
         TaskStatus status,
         Set<String> tags
 ) {
@@ -20,6 +21,7 @@ public record TaskResponse(
                 task.getName(),
                 task.getDescription(),
                 task.getDeadline(),
+                task.getCreatedAt(),
                 task.getStatus(),
                 task.getTags().stream()
                         .map(Tag::getName)

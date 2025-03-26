@@ -23,7 +23,15 @@ public class Task {
 
     private LocalDateTime deadline;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
 //    private JSON weather
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -91,6 +99,10 @@ public class Task {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }
 

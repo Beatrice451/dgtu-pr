@@ -34,16 +34,16 @@ public class UserService {
     }
 
     public void registerUser(UserRequest request) {
-        userRepository.findByEmail(request.getEmail())
+        userRepository.findByEmail(request.email())
                 .ifPresent(user -> {
-                    throw new UserAlreadyExistsException("User already exists: " + request.getEmail());
+                    throw new UserAlreadyExistsException("User already exists: " + request.email());
                 });
 
         User user = new User();
-        user.setEmail(request.getEmail());
-        user.setName(request.getName());
-        user.setCity(request.getCity());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.email());
+        user.setName(request.name());
+        user.setCity(request.city());
+        user.setPassword(passwordEncoder.encode(request.password()));
 
         userRepository.save(user);
     }
@@ -63,15 +63,12 @@ public class UserService {
 
         String token = jwtUtil.generateToken(user.getEmail());
 
-        return ResponseEntity.ok().body(new AuthResponse("200 Login successful"));
+        return ResponseEntity.ok().body(new AuthResponse("200 Login successful", token));
     }
 
     public void deleteUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User not found");
-        }
-        userRepository.deleteById(user.get().getId());
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        userRepository.deleteById(user.getId());
     }
 
     public User getUserInfo(String header) {

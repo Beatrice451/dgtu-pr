@@ -39,4 +39,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("403 UNAUTHORIZED", exception.getMessage()));
     }
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<?> handleTaskNotFound(TaskNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("404 NOT FOUND", exception.getMessage()));
+    }
 }
