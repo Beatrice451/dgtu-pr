@@ -2,7 +2,11 @@ package org.beatrice.dgtuProject.controller;
 
 
 import org.beatrice.dgtuProject.dto.ApiResponse;
+import org.beatrice.dgtuProject.dto.StatusRequest;
 import org.beatrice.dgtuProject.dto.TaskRequest;
+import org.beatrice.dgtuProject.dto.TaskResponse;
+import org.beatrice.dgtuProject.model.Task;
+import org.beatrice.dgtuProject.model.TaskStatus;
 import org.beatrice.dgtuProject.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +42,11 @@ public class TaskController {
     public ResponseEntity<?> deleteTask(@PathVariable Long id, @RequestHeader("Authorization") String header) {
         taskService.deleteTask(id, header);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateTaskStatus(@PathVariable Long id, @RequestBody StatusRequest status) {
+        TaskResponse updatedTask = taskService.patchTask(id, status);
+        return ResponseEntity.ok(updatedTask);
     }
 }

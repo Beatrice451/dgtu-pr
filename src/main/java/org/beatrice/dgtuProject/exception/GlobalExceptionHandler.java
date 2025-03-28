@@ -10,12 +10,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // USER EXCEPTIONS
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("404 NOT FOUND", exception.getMessage()));
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<?> handleUserAlreadyExists(UserAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("409 CONFLICT", exception.getMessage()));
+    }
+
+
+    // TASK EXCEPTIONS
     @ExceptionHandler(InvalidTaskStatusException.class)
     public ResponseEntity<?> handleInvalidTaskStatus(InvalidTaskStatusException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -28,22 +37,23 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse("400 BAD REQUEST", exception.getMessage()));
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleUserAlreadyExists(UserAlreadyExistsException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse("409 CONFLICT", exception.getMessage()));
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<?> handleTaskNotFound(TaskNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("404 NOT FOUND", exception.getMessage()));
     }
 
+    // TOKEN EXCEPTIONS
     @ExceptionHandler(MissingTokenException.class)
     public ResponseEntity<?> handleMissingToken(MissingTokenException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse("403 UNAUTHORIZED", exception.getMessage()));
+                .body(new ErrorResponse("401 UNAUTHORIZED", exception.getMessage()));
     }
 
-    @ExceptionHandler(TaskNotFoundException.class)
-    public ResponseEntity<?> handleTaskNotFound(TaskNotFoundException exception) {
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<?> handleInvalidToken(InvalidTokenException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse("404 NOT FOUND", exception.getMessage()));
+                .body(new ErrorResponse("401 UNAUTHORIZED", exception.getMessage()));
     }
 
     @ExceptionHandler(NoAccessEexception.class)
