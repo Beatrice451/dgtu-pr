@@ -67,5 +67,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse("403 FORBIDDEN", exception.getMessage()));
     }
+
+    @ExceptionHandler(NoAccessEexception.class)
+    public ResponseEntity<?> handleNoAccess(NoAccessEexception exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse("403 FORBIDDEN", "You have no access to this resource"));
+    }
 }
 
