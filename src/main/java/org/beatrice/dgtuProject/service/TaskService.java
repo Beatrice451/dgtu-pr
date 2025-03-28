@@ -1,6 +1,7 @@
 package org.beatrice.dgtuProject.service;
 
 
+import org.beatrice.dgtuProject.dto.StatusRequest;
 import org.beatrice.dgtuProject.dto.TaskRequest;
 import org.beatrice.dgtuProject.dto.TaskResponse;
 import org.beatrice.dgtuProject.exception.DeadlinePassedException;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,7 +38,6 @@ public class TaskService {
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
     }
-
 
 
     public void createTask(String header, TaskRequest request) {
@@ -77,13 +76,36 @@ public class TaskService {
         String token = jwtUtil.getTokenFromHeader(header);
         String email = jwtUtil.getEmailFromToken(token);
         List<Task> tasks = taskRepository.findAllByUserEmail(email);
-        return tasks.stream()
-                .map(TaskResponse::fromEntity)
-                .collect(Collectors.toList());
+        return tasks.stream().map(TaskResponse::fromEntity).collect(Collectors.toList());
     }
 
     public void deleteTask(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task with such id not found"));
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task with such id not found"));
         taskRepository.deleteById(task.getId());
+    }
+
+    public TaskResponse patchTask(Long id, StatusRequest status) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        try {
+            task.setStatus(TaskStatus.valueOf(status.status().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidTaskStatusException("Invalid task status: " + status.status());
+        }
+
+        taskRepository.save(task);
+        return new TaskResponse(
+                task.getName(),
+                task.getDescription(),
+                task.getDeadline(),
+                task.getCreatedAt(),
+                task.getStatus(),
+                task.getTags()
+                        .stream()
+                        .map(Tag::getName)
+                        .collect(Collectors.toSet())
+        );
     }
 }
