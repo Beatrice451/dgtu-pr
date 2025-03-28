@@ -1,12 +1,10 @@
 package org.beatrice.dgtuProject.service;
 
 
+import org.beatrice.dgtuProject.dto.StatusRequest;
 import org.beatrice.dgtuProject.dto.TaskRequest;
 import org.beatrice.dgtuProject.dto.TaskResponse;
-import org.beatrice.dgtuProject.exception.DeadlinePassedException;
-import org.beatrice.dgtuProject.exception.InvalidTaskStatusException;
-import org.beatrice.dgtuProject.exception.TaskNotFoundException;
-import org.beatrice.dgtuProject.exception.UserNotFoundException;
+import org.beatrice.dgtuProject.exception.*;
 import org.beatrice.dgtuProject.model.Tag;
 import org.beatrice.dgtuProject.model.Task;
 import org.beatrice.dgtuProject.model.TaskStatus;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,9 +78,16 @@ public class TaskService {
         return tasks.stream().map(TaskResponse::fromEntity).collect(Collectors.toList());
     }
 
-    public void deleteTask(Long id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task with such id not found"));
+    public void deleteTask(Long id, String header) {
+        String token = jwtUtil.getTokenFromHeader(header);
+        String email = jwtUtil.getEmailFromToken(token);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task with such id not found"));
+        if (!Objects.equals(user.getId(), task.getUser().getId())) {
+            throw new NoAccessEexception("No access to this task:" + task.getId());
+        }
         taskRepository.deleteById(task.getId());
     }
 
@@ -98,12 +104,12 @@ public class TaskService {
         taskRepository.save(task);
         return new TaskResponse(
                 task.getName(),
+                task.getUser().getName(),
                 task.getDescription(),
                 task.getDeadline(),
                 task.getCreatedAt(),
                 task.getStatus(),
-                task.getTags()
-                        .stream()
+                task.getTags().stream()
                         .map(Tag::getName)
                         .collect(Collectors.toSet())
         );

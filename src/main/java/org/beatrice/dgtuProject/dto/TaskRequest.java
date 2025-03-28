@@ -2,7 +2,6 @@ package org.beatrice.dgtuProject.dto;
 
 import org.beatrice.dgtuProject.model.Tag;
 import org.beatrice.dgtuProject.model.Task;
-import org.beatrice.dgtuProject.model.TaskStatus;
 
 import java.time.LocalDateTime;
 import java.util.Set;
