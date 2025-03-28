@@ -30,13 +30,13 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<?> getTasks(@RequestHeader("Authorization") String header) {
-        List<?> tasks = taskService.getTasks(header);
+        List<?> tasks = taskService.getTasks();
         return ResponseEntity.ok(tasks);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public ResponseEntity<?> deleteTask(@PathVariable Long id, @RequestHeader("Authorization") String header) {
+        taskService.deleteTask(id, header);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

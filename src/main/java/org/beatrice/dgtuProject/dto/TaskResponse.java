@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public record TaskResponse(
         String name,
+        String author,
         String description,
         LocalDateTime deadline,
         LocalDateTime createdAt,
@@ -19,6 +20,7 @@ public record TaskResponse(
     public static TaskResponse fromEntity(Task task) {
         return new TaskResponse(
                 task.getName(),
+                task.getUser().getName(),
                 task.getDescription(),
                 task.getDeadline(),
                 task.getCreatedAt(),

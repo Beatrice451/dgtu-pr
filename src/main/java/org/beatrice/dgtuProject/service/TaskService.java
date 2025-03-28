@@ -3,10 +3,7 @@ package org.beatrice.dgtuProject.service;
 
 import org.beatrice.dgtuProject.dto.TaskRequest;
 import org.beatrice.dgtuProject.dto.TaskResponse;
-import org.beatrice.dgtuProject.exception.DeadlinePassedException;
-import org.beatrice.dgtuProject.exception.InvalidTaskStatusException;
-import org.beatrice.dgtuProject.exception.TaskNotFoundException;
-import org.beatrice.dgtuProject.exception.UserNotFoundException;
+import org.beatrice.dgtuProject.exception.*;
 import org.beatrice.dgtuProject.model.Tag;
 import org.beatrice.dgtuProject.model.Task;
 import org.beatrice.dgtuProject.model.TaskStatus;
@@ -15,12 +12,14 @@ import org.beatrice.dgtuProject.repository.TagRepository;
 import org.beatrice.dgtuProject.repository.TaskRepository;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.security.JwtUtil;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,17 +72,23 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public List<TaskResponse> getTasks(String header) {
-        String token = jwtUtil.getTokenFromHeader(header);
-        String email = jwtUtil.getEmailFromToken(token);
-        List<Task> tasks = taskRepository.findAllByUserEmail(email);
+    public List<TaskResponse> getTasks() {
+        List<Task> tasks = taskRepository.findAll();
         return tasks.stream()
                 .map(TaskResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 
-    public void deleteTask(Long id) {
+    public void deleteTask(Long id, String header) {
+        String token = jwtUtil.getTokenFromHeader(header);
+        String email = jwtUtil.getEmailFromToken(token);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task with such id not found"));
+        if (!Objects.equals(user.getId(), task.getUser().getId())) {
+            throw new NoAccessEexception("No access to this task:" + task.getId());
+        }
         taskRepository.deleteById(task.getId());
     }
 }
