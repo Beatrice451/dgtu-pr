@@ -49,7 +49,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoAccessEexception.class)
     public ResponseEntity<?> handleNoAccess(NoAccessEexception exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new ErrorResponse("403 FORBIDDEN", "You have no access to this resource"));
+                .body(new ErrorResponse("403 FORBIDDEN", exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> handleInvalidCredentials(InvalidCredentialsException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse("403 FORBIDDEN", exception.getMessage()));
     }
 }
 

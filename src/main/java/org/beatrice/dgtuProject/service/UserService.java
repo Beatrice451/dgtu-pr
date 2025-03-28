@@ -5,10 +5,7 @@ import org.beatrice.dgtuProject.dto.AuthResponse;
 import org.beatrice.dgtuProject.dto.ErrorResponse;
 import org.beatrice.dgtuProject.dto.LoginRequest;
 import org.beatrice.dgtuProject.dto.UserRequest;
-import org.beatrice.dgtuProject.exception.InvalidTokenException;
-import org.beatrice.dgtuProject.exception.MissingTokenException;
-import org.beatrice.dgtuProject.exception.UserAlreadyExistsException;
-import org.beatrice.dgtuProject.exception.UserNotFoundException;
+import org.beatrice.dgtuProject.exception.*;
 import org.beatrice.dgtuProject.model.User;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.security.JwtUtil;
@@ -48,22 +45,21 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public ResponseEntity<?> loginUser(LoginRequest loginRequest) {
+    public AuthResponse loginUser(LoginRequest loginRequest) {
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.email());
 
         if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid email or password"));
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         User user = userOptional.get();
 
         if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("401 Unauthorized", "Invalid email or password"));
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
-
-        return ResponseEntity.ok().body(new AuthResponse("200 Login successful", token));
+        return new AuthResponse("User created successfully", token);
     }
 
     public void deleteUser(Long id) {
