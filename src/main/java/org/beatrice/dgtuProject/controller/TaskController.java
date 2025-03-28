@@ -5,8 +5,6 @@ import org.beatrice.dgtuProject.dto.ApiResponse;
 import org.beatrice.dgtuProject.dto.StatusRequest;
 import org.beatrice.dgtuProject.dto.TaskRequest;
 import org.beatrice.dgtuProject.dto.TaskResponse;
-import org.beatrice.dgtuProject.model.Task;
-import org.beatrice.dgtuProject.model.TaskStatus;
 import org.beatrice.dgtuProject.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +32,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<?> getTasks(@RequestHeader("Authorization") String header) {
-        List<?> tasks = taskService.getTasks();
+        List<?> tasks = taskService.getTasks(header);
         return ResponseEntity.ok(tasks);
     }
 

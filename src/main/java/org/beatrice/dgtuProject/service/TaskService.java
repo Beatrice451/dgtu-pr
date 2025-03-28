@@ -1,12 +1,10 @@
 package org.beatrice.dgtuProject.service;
 
 
+import org.beatrice.dgtuProject.dto.StatusRequest;
 import org.beatrice.dgtuProject.dto.TaskRequest;
 import org.beatrice.dgtuProject.dto.TaskResponse;
-import org.beatrice.dgtuProject.exception.DeadlinePassedException;
-import org.beatrice.dgtuProject.exception.InvalidTaskStatusException;
-import org.beatrice.dgtuProject.exception.TaskNotFoundException;
-import org.beatrice.dgtuProject.exception.UserNotFoundException;
+import org.beatrice.dgtuProject.exception.*;
 import org.beatrice.dgtuProject.model.Tag;
 import org.beatrice.dgtuProject.model.Task;
 import org.beatrice.dgtuProject.model.TaskStatus;
@@ -108,12 +106,12 @@ public class TaskService {
         taskRepository.save(task);
         return new TaskResponse(
                 task.getName(),
+                task.getUser().getName(),
                 task.getDescription(),
                 task.getDeadline(),
                 task.getCreatedAt(),
                 task.getStatus(),
-                task.getTags()
-                        .stream()
+                task.getTags().stream()
                         .map(Tag::getName)
                         .collect(Collectors.toSet())
         );

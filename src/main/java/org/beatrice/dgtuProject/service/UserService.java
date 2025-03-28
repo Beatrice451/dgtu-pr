@@ -2,7 +2,6 @@ package org.beatrice.dgtuProject.service;
 
 
 import org.beatrice.dgtuProject.dto.AuthResponse;
-import org.beatrice.dgtuProject.dto.ErrorResponse;
 import org.beatrice.dgtuProject.dto.LoginRequest;
 import org.beatrice.dgtuProject.dto.UserRequest;
 import org.beatrice.dgtuProject.exception.*;
@@ -10,8 +9,6 @@ import org.beatrice.dgtuProject.model.User;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
