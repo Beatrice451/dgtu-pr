@@ -13,10 +13,8 @@ import org.beatrice.dgtuProject.repository.TagRepository;
 import org.beatrice.dgtuProject.repository.TaskRepository;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.security.JwtUtil;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -72,11 +70,11 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public List<TaskResponse> getTasks() {
-        List<Task> tasks = taskRepository.findAll();
-        return tasks.stream()
-                .map(TaskResponse::fromEntity)
-                .collect(Collectors.toList());
+    public List<TaskResponse> getTasks(String header) {
+        String token = jwtUtil.getTokenFromHeader(header);
+        String email = jwtUtil.getEmailFromToken(token);
+        List<Task> tasks = taskRepository.findAllByUserEmail(email);
+        return tasks.stream().map(TaskResponse::fromEntity).collect(Collectors.toList());
     }
 
     public void deleteTask(Long id, String header) {
