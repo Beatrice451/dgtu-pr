@@ -31,8 +31,8 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getTasks(@RequestHeader("Authorization") String header) {
-        List<?> tasks = taskService.getTasks(header);
+    public ResponseEntity<?> getTasks() {
+        List<?> tasks = taskService.getTasks();
         return ResponseEntity.ok(tasks);
     }
 

@@ -23,7 +23,6 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse("409 CONFLICT", exception.getMessage()));
     }
 
-
     // TASK EXCEPTIONS
     @ExceptionHandler(InvalidTaskStatusException.class)
     public ResponseEntity<?> handleInvalidTaskStatus(InvalidTaskStatusException exception) {
@@ -54,12 +53,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInvalidToken(InvalidTokenException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("401 UNAUTHORIZED", exception.getMessage()));
-    }
-
-    @ExceptionHandler(NoAccessEexception.class)
-    public ResponseEntity<?> handleNoAccess(NoAccessEexception exception) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new ErrorResponse("403 FORBIDDEN", exception.getMessage()));
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)

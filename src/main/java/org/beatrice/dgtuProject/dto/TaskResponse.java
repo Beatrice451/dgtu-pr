@@ -17,6 +17,18 @@ public record TaskResponse(
         TaskStatus status,
         Set<String> tags
 ) {
+    public TaskResponse(Task task) {
+        this.name = task.getName();
+        this.author = task.getUser().getName();
+        this.description = task.getDescription();
+        this.deadline = task.getDeadline();
+        this.createdAt = task.getCreatedAt();
+        this.status = task.getStatus();
+        this.tags = task.getTags().stream()
+                .map(Tag::getName)
+                .collect(Collectors.toSet());
+    }
+
     public static TaskResponse fromEntity(Task task) {
         return new TaskResponse(
                 task.getName(),

@@ -13,6 +13,8 @@ import org.beatrice.dgtuProject.repository.TagRepository;
 import org.beatrice.dgtuProject.repository.TaskRepository;
 import org.beatrice.dgtuProject.repository.UserRepository;
 import org.beatrice.dgtuProject.security.JwtUtil;
+import org.beatrice.dgtuProject.specification.TaskSpecifications;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -70,12 +72,31 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public List<TaskResponse> getTasks(String header) {
-        String token = jwtUtil.getTokenFromHeader(header);
-        String email = jwtUtil.getEmailFromToken(token);
-        List<Task> tasks = taskRepository.findAllByUserEmail(email);
-        return tasks.stream().map(TaskResponse::fromEntity).collect(Collectors.toList());
+
+    public List<TaskResponse> getTasks(String status, String priority, String tag, String name) {
+
+        Specification<Task> spec = Specification.where(null);
+        if (status != null) {
+            spec.and(TaskSpecifications.hasStatus(status));
+        }
+
+        if (priority != null) {
+            spec.and(TaskSpecifications.hasPriority(priority));
+        }
+
+        if (tag != null) {
+            spec.and(TaskSpecifications.hasTag(tag));
+        }
+
+        if (name != null) {
+            spec.and(TaskSpecifications.hasNameContaining(name));
+        }
+
+        return taskRepository.findAll(spec).stream()
+                .map(TaskResponse::new)
+                .collect(Collectors.toList());
     }
+
 
     public void deleteTask(Long id, String header) {
         String token = jwtUtil.getTokenFromHeader(header);

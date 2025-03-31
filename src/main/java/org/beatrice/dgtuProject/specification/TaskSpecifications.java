@@ -22,4 +22,10 @@ public class TaskSpecifications {
                 criteriaBuilder.like(root.get("name"), "%" + name + "%")
         );
     }
+
+    public static Specification<Task>  hasTag(String tag) {
+        return ((root, query, criteriaBuilder) ->
+                criteriaBuilder.isMember(tag, root.get("tags"))
+        );
+    }
 }
