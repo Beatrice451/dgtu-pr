@@ -73,29 +73,39 @@ public class TaskService {
     }
 
 
+    /**
+     * Retrieves a list of tasks based on the given parameters.
+     *
+     * @param status Task status. Can be one of {@link TaskStatus}.
+     * @param priority Task priority. Can be one of "low", "medium", or "high".
+     * @param tag Task tag.
+     * @param name Task name. Supports partial matching.
+     * @return A list of tasks matching the given parameters.
+     */
     public List<TaskResponse> getTasks(String status, String priority, String tag, String name) {
 
         Specification<Task> spec = Specification.where(null);
         if (status != null) {
-            spec.and(TaskSpecifications.hasStatus(status));
+            spec = spec.and(TaskSpecifications.hasStatus(status));
         }
 
         if (priority != null) {
-            spec.and(TaskSpecifications.hasPriority(priority));
+            spec = spec.and(TaskSpecifications.hasPriority(priority));
         }
 
         if (tag != null) {
-            spec.and(TaskSpecifications.hasTag(tag));
+            spec = spec.and(TaskSpecifications.hasTag(tag));
         }
 
         if (name != null) {
-            spec.and(TaskSpecifications.hasNameContaining(name));
+            spec = spec.and(TaskSpecifications.hasNameContaining(name));
         }
 
         return taskRepository.findAll(spec).stream()
-                .map(TaskResponse::new)
+                .map(TaskResponse::fromEntity)
                 .collect(Collectors.toList());
     }
+
 
 
     public void deleteTask(Long id, String header) {

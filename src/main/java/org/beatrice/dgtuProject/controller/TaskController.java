@@ -6,6 +6,8 @@ import org.beatrice.dgtuProject.dto.StatusRequest;
 import org.beatrice.dgtuProject.dto.TaskRequest;
 import org.beatrice.dgtuProject.dto.TaskResponse;
 import org.beatrice.dgtuProject.service.TaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,9 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
+    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
 
     private final TaskService taskService;
@@ -31,8 +34,15 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getTasks() {
-        List<?> tasks = taskService.getTasks();
+    public ResponseEntity<?> getTasks(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String priority,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) String name
+    ) {
+        logger.debug("Getting request: /tasks [GET]. Params: status = {}, priority = {}, tag = {}, name = {}",
+                status, priority, tag, name);
+        List<?> tasks = taskService.getTasks(status, priority, tag, name);
         return ResponseEntity.ok(tasks);
     }
 
